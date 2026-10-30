@@ -27,7 +27,8 @@ public class MouseLook : MonoBehaviour
             if (Input.GetMouseButtonDown(0)) LockCursor(true);
             return;
         }
-        if (Interactor.IsInspecting) return;
+
+        if (PlayerHealth.Frozen || Interactor.IsInspecting) return;
 
         float mx = Input.GetAxis("Mouse X") * sensitivity;
         float my = Input.GetAxis("Mouse Y") * sensitivity;

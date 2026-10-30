@@ -20,3 +20,7 @@ MonoBehaviour:
     photo in the darkroom.
   armedDescription: The flash is ready.
   armedCharges: 3
+  weaponType: 1
+  effectSeconds: 4
+  effectRange: 12
+  coneAngle: 60

@@ -57,8 +57,11 @@ public class CuratorAI : MonoBehaviour
     float attackTimer;
     Vector3 investigateTarget;
 
+    Vector3 startPosition;
+
     void Awake()
     {
+        startPosition = transform.position;
         agent = GetComponent<NavMeshAgent>();
         if (player == null)
         {
@@ -73,7 +76,25 @@ public class CuratorAI : MonoBehaviour
     void OnEnable() { NoiseSystem.OnNoise += OnNoiseHeard; }
     void OnDisable() { NoiseSystem.OnNoise -= OnNoiseHeard; }
 
-    void Start() { GoToPatrolPoint(); }
+    void Start()
+    {
+        if (!agent.isOnNavMesh)
+            Debug.LogWarning("CuratorAI: the agent is not on the NavMesh. Lower him to the floor and re-bake.", this);
+
+        if (patrolPoints == null || patrolPoints.Length == 0)
+            Debug.LogWarning("CuratorAI: no Patrol Points assigned, so he will only move when he hears noise.", this);
+        else
+        {
+            foreach (Transform p in patrolPoints)
+            {
+                if (p == null) { Debug.LogWarning("CuratorAI: a Patrol Points slot is empty.", this); continue; }
+                if (p.IsChildOf(transform))
+                    Debug.LogWarning($"CuratorAI: patrol point '{p.name}' is a child of the Curator, so it moves with him. Move it out to the scene root.", this);
+            }
+        }
+
+        GoToPatrolPoint();
+    }
 
     // Only keep noises that are within hearing range of the Curator.
     void OnNoiseHeard(NoiseEvent e)
@@ -210,6 +231,17 @@ public class CuratorAI : MonoBehaviour
             attackTimer = attackCooldown;
             OnHitPlayer?.Invoke();
         }
+    }
+
+    // ---------- Called when the player dies and respawns ----------
+    public void ResetToStart()
+    {
+        heard.Clear();
+        agent.isStopped = false;
+        agent.Warp(startPosition);
+        patrolIndex = 0;
+        attackTimer = attackCooldown;
+        GoToPatrolPoint();
     }
 
     // ---------- Weapons call these ----------
