@@ -54,6 +54,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (PlayerHealth.Frozen) return;
+
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         input = Vector2.ClampMagnitude(input, 1f);
         bool hasInput = input.sqrMagnitude > 0.01f;

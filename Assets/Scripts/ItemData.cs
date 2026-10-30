@@ -2,6 +2,9 @@ using UnityEngine;
 
 public enum ItemState { Raw, Armed }
 
+/// <summary>What happens when the player left-clicks with this item armed.</summary>
+public enum WeaponType { None, Flash, Sleep }
+
 /// <summary>
 /// Data for one clue-weapon (Evidence Camera, Music Box, Mirror Shard...).
 /// Create in Unity: right-click in Project > Create > Marginalia > Item.
@@ -22,6 +25,13 @@ public class ItemData : ScriptableObject
     [Header("Weapon")]
     [Tooltip("Uses once armed. 0 = unlimited. Mirror Shard = 3, Camera = film count.")]
     public int armedCharges = 3;
+    public WeaponType weaponType = WeaponType.None;
+    [Tooltip("How long the Curator is stunned or put to sleep (seconds).")]
+    public float effectSeconds = 4f;
+    [Tooltip("How far the effect reaches (meters).")]
+    public float effectRange = 12f;
+    [Tooltip("Flash cone: how wide it is (degrees, full angle).")]
+    public float coneAngle = 60f;
 
     public string GetInspectText(ItemState state)
     {
